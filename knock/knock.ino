@@ -5,12 +5,12 @@
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
 int threshhold = 50;
-int gapWait = 500;
+int gapWait = 50;
 
 unsigned long startTime = -1;
 unsigned long lastHit = -1;
 
-int knocks[KNOCKS];
+int knocks[KNOCKS] = {0};
 int pos = 0;
 
 void setup()
@@ -33,9 +33,22 @@ void loop()
      {
       lcd.clear();
       lcd.print(knock);
+      knocks[pos] = millis() - lastHit;
       lastHit = millis();
-      knocks[pos] = knock;
       pos++;
      }
    }
+   
+   printAll();
+}
+
+void printAll()
+{
+  lcd.setCursor(0, 1);
+  
+  for (int i = 0; i < pos; i++)
+  {
+   lcd.print(knocks[i]);
+   lcd.print(" "); 
+  }
 }
