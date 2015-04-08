@@ -33,6 +33,8 @@ void setup()
     warningDistance = 10;
     EEPROM.put(0, warningDistance);
   }
+
+  PrintWarningDistance();
 }
 
 void loop()
@@ -55,16 +57,39 @@ void loop()
   {
     warningDistance = distance;
     EEPROM.put(0, warningDistance);
+    PrintWarningDistance();
+
+    digitalWrite(greenPin, LOW);
+
+    for (int i = 0; i < 3; i++)
+    {
+      delay(200);
+      digitalWrite(greenPin, HIGH);
+      delay(200);
+      digitalWrite(greenPin, LOW);
+    }
   }
   else
   {
     digitalWrite(greenPin, distance < warningDistance ? LOW : HIGH);
     digitalWrite(redPin, distance < warningDistance ? HIGH : LOW);
 
-    lcd.clear();
-    lcd.print(distance);
+    PrintDistance(distance);
   }
   delay(500);
 }
 
+void PrintWarningDistance()
+{
+  lcd.setCursor(0, 1);
+  lcd.print(warningDistance);
+  lcd.print("    ");
+}
+
+void PrintDistance(int distance)
+{
+  lcd.setCursor(0, 0);
+  lcd.print(distance);
+  lcd.print("    ");
+}
 
