@@ -1,4 +1,5 @@
 #include <LiquidCrystal.h>
+#include <EEPROM.h>
 
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
@@ -8,7 +9,9 @@ LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 #define greenPin 9
 #define redPin 10
 
-#define buzzer 13
+#define setButton 13
+
+int warningDistance = 10;
 
 void setup()
 {
@@ -21,35 +24,46 @@ void setup()
   pinMode(greenPin, OUTPUT);
   pinMode(redPin, OUTPUT);
 
+  pinMode(setButton, INPUT);
+
+  EEPROM.get(0, warningDistance);
+
+  if (warningDistance > 1000 || warningDistance <= 0)
+  {
+    warningDistance = 10;
+    EEPROM.put(0, warningDistance);
+  }
 }
 
 void loop()
 {
   long duration, distance; // Duration used to calculate distance
 
-    digitalWrite(trigPin, LOW); 
-  delayMicroseconds(2); 
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
 
   digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10); 
+  delayMicroseconds(10);
 
   digitalWrite(trigPin, LOW);
   duration = pulseIn(echoPin, HIGH);
 
   //Calculate the distance (in cm) based on the speed of sound.
-  distance = duration/58.2;
+  distance = duration / 58.2;
 
-  digitalWrite(greenPin, distance < 10 ? LOW : HIGH);
-  digitalWrite(redPin, distance < 10 ? HIGH: LOW);
-
-  if (distance < 10)
+  if (digitalRead(setButton) == HIGH)
   {
-    tone(buzzer, 1915, 100);
+    warningDistance = distance;
+    EEPROM.put(0, warningDistance);
   }
+  else
+  {
+    digitalWrite(greenPin, distance < warningDistance ? LOW : HIGH);
+    digitalWrite(redPin, distance < warningDistance ? HIGH : LOW);
 
-
-  lcd.clear();
-  lcd.print(distance);
+    lcd.clear();
+    lcd.print(distance);
+  }
   delay(500);
 }
 
