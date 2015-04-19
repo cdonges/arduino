@@ -1,7 +1,4 @@
-#include <LiquidCrystal.h>
 #include <EEPROM.h>
-
-LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
 #define echoPin 7
 #define trigPin 8
@@ -9,15 +6,12 @@ LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 #define greenPin 9
 #define redPin 10
 
-#define setButton 13
+#define setButton 11
 
 int warningDistance = 10;
 
 void setup()
 {
-  lcd.begin(16, 2);
-  lcd.clear();
-
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
 
@@ -33,8 +27,14 @@ void setup()
     warningDistance = 10;
     EEPROM.put(0, warningDistance);
   }
-
-  PrintWarningDistance();
+  
+  for (int i = 0; i < warningDistance; i++)
+  {
+      delay(200);
+      digitalWrite(greenPin, HIGH);
+      delay(200);
+      digitalWrite(greenPin, LOW);
+  }
 }
 
 void loop()
@@ -57,7 +57,6 @@ void loop()
   {
     warningDistance = distance;
     EEPROM.put(0, warningDistance);
-    PrintWarningDistance();
 
     digitalWrite(greenPin, LOW);
 
@@ -73,23 +72,8 @@ void loop()
   {
     digitalWrite(greenPin, distance < warningDistance ? LOW : HIGH);
     digitalWrite(redPin, distance < warningDistance ? HIGH : LOW);
-
-    PrintDistance(distance);
   }
   delay(500);
 }
 
-void PrintWarningDistance()
-{
-  lcd.setCursor(0, 1);
-  lcd.print(warningDistance);
-  lcd.print("    ");
-}
-
-void PrintDistance(int distance)
-{
-  lcd.setCursor(0, 0);
-  lcd.print(distance);
-  lcd.print("    ");
-}
 
