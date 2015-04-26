@@ -1,12 +1,12 @@
 #include <EEPROM.h>
 
-#define echoPin 7
-#define trigPin 8
+#define echoPin 4
+#define trigPin 3
 
-#define greenPin 9
+#define greenPin 8
 #define redPin 10
 
-#define setButton 11
+#define setButton 12
 
 int warningDistance = 10;
 
