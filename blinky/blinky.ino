@@ -23,7 +23,7 @@ void Write()
 {
    for (int row = 0; row < 2; row++)
   {
-     digitalWrite(rows[row], HIGH);
+     digitalWrite(rows[row], LOW);
      for (int col = 0; col < 4; col++)
     {
       if (display[(row * 2) + col] == 1)
@@ -35,7 +35,7 @@ void Write()
         digitalWrite(cols[col], LOW);
       }
      } 
-        digitalWrite(rows[row], LOW);
+        digitalWrite(rows[row], HIGH);
   }
  
 }
