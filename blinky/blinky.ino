@@ -44,7 +44,7 @@ void Clear()
 
 void Write(int ms)
 {
-  int startTime = millis();
+  long startTime = millis();
 
   while (millis() - startTime <= ms)
   {
